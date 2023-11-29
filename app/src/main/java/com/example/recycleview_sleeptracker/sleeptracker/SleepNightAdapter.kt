@@ -1,25 +1,24 @@
+//Вьюхолдер це те - які вьюшки я буду відображати у РВ
 package com.example.recycleview_sleeptracker.sleeptracker
-
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recycleview_sleeptracker.R
 import com.example.recycleview_sleeptracker.convertDurationToFormatted
 import com.example.recycleview_sleeptracker.convertNumericQualityToString
 import com.example.recycleview_sleeptracker.database.SleepNight
 
-class SleepNightAdapter : RecyclerView.Adapter<SleepNightAdapter.ViewHolder>() {
-    var data = listOf<SleepNight>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
 
-    override fun getItemCount() = data.size
+
+class SleepNightAdapter : androidx.recyclerview.widget.ListAdapter<SleepNight, SleepNightAdapter.ViewHolder>(SleepNightDiffCallBack()) {
+
+
+
 
     override fun onCreateViewHolder(/*it is RecycleView */ parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -27,7 +26,7 @@ class SleepNightAdapter : RecyclerView.Adapter<SleepNightAdapter.ViewHolder>() {
 
     // how to change the contents of a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = data[position]
+        val item = getItem(position)
         val res = holder.itemView.context.resources
         holder.bind(item)
 
@@ -66,5 +65,20 @@ class SleepNightAdapter : RecyclerView.Adapter<SleepNightAdapter.ViewHolder>() {
         }
     }
 
+    class SleepNightDiffCallBack: DiffUtil.ItemCallback<SleepNight>(){
+        //it`s will be used to discover if an item was edit, removed or moved.
+        //F.e. I move last sleep night to the first position. this method will figure out that the item is the same as the item in old position.
+        //So he check(for example view`s id) that item on new position and old position is the same
+        override fun areItemsTheSame(oldItem: SleepNight, newItem: SleepNight): Boolean {
+            return oldItem.nightId == newItem.nightId
+        }
+
+        //here we check that content inside the item is not changed. If anything has changed in SleepNight betw. old and new list
+        //it`s tell DiffUtil the item has been updated
+        override fun areContentsTheSame(oldItem: SleepNight, newItem: SleepNight): Boolean {
+            return  oldItem == newItem
+        }
+
+    }
 
 }
