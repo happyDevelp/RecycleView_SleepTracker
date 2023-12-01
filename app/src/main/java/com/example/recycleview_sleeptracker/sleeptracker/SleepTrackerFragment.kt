@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.recycleview_sleeptracker.database.SleepDatabase
 import com.example.recycleview_sleeptracker.R
 import com.example.recycleview_sleeptracker.database.SleepNight
@@ -58,6 +59,8 @@ class SleepTrackerFragment : Fragment() {
             }
         })
 
+        val manager = GridLayoutManager(activity, 3)
+        binding.sleepList.layoutManager
 
         val adapter = SleepNightAdapter()
         binding.sleepList.adapter = adapter
